@@ -1,0 +1,58 @@
+servidor web Apache:
+sudo apt-get install ufw
+
+
+Configure o UFW para redirecionar todo o tráfego da porta 80 (HTTP) para a página do portal cativo:
+sudo ufw allow 80/tcp
+sudo ufw redirect 80/tcp to 8080/tcp
+
+
+Crie a página do portal cativo em /var/www/html/index.php:
+sudo nano /var/www/html/index.php
+
+
+Adicione o seguinte código HTML e PHP para a página do portal cativo:
+<html>
+  <head>
+    <title>Portal Cativo</title>
+  </head>
+  <body>
+    <h1>Bem-vindo ao Portal Cativo</h1>
+    <p>Por favor, autentique-se para continuar.</p>
+    <form action="authenticate.php" method="post">
+      <label for="username">Nome de usuário:</label>
+      <input type="text" id="username" name="username">
+      <br><br>
+      <label for="password">Senha:</label>
+      <input type="password" id="password" name="password">
+      <br><br>
+      <input type="submit" value="Entrar">
+    </form>
+  </body>
+</html>
+
+
+Crie o arquivo de autenticação authenticate.php em /var/www/html/authenticate.php:
+sudo nano /var/www/html/authenticate.php
+
+
+Adicione o seguinte código PHP para o arquivo authenticate.php:
+<?php
+  $username = $_POST["username"];
+  $password = $_POST["password"];
+ 
+  if ($username === "admin" && $password === "password") {
+    header("Location: http://www.google.com");
+    exit;
+  } else {
+    header("Location: /");
+    exit;
+  }
+?>
+
+
+Reinicie o Apache:
+sudo service apache2 restart
+
+
+Agora, quando um dispositivo se conectar ao ponto de acesso, será redirecionado para a página do portal cativo em http://localhost:8080. O usuário precisará inserir nome de usuário
